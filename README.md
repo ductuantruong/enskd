@@ -24,7 +24,7 @@ pip install -r requirements.txt
 We used VoxCeleb dataset for training and test. For noise augmentation, we used the MUSAN and RIRS corpus. To download and preprocesing data, please run the following snippet  
 
 ``` sh
-bash prepare_data/sh --stage 1 --stop_stage 2
+bash prepare_data.sh --stage 1 --stop_stage 2
 ```
 
 ## Pretrained Model
