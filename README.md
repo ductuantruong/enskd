@@ -28,7 +28,7 @@ bash prepare_data.sh --stage 1 --stop_stage 2
 ```
 
 ## Pretrained Model
-The pretrained teacher model WavLM-Large can be found at [microsoft/UniSpeech](https://github.com/microsoft/UniSpeech/tree/main/downstreams/speaker_verification) and download at [link](https://drive.google.com/file/d/1-aE1NfzpRCLxA4GUxX9ITI3F9LlbtEGP/view?usp=sharing). The WavLM-Large checkpoint should be put at `/pretrained_model`
+The pretrained teacher model WavLM-Large can be found at [microsoft/UniSpeech](https://github.com/microsoft/UniSpeech/tree/main/downstreams/speaker_verification) and download at [link](https://drive.google.com/file/d/1-aE1NfzpRCLxA4GUxX9ITI3F9LlbtEGP/view?usp=sharing). The WavLM-Large checkpoint should be put at `pretrained_model/`
 
 We have uploaded pretrained models of our experiments. You can download pretrained models from [OneDrive](https://entuedu-my.sharepoint.com/:f:/g/personal/truongdu001_e_ntu_edu_sg/EpjkpezMPC9Fmrng3w73iVcB7aFORZoiNWg458Y3RlOGOA?e=FhYn6Q) and put in the corresponding directory in `exp/` folder. 
 
