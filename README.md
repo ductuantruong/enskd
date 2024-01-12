@@ -1,11 +1,9 @@
 # Emphasized Non-Target Speaker Knowledge in Knowledge Distillation for Speaker Verification
 
-This Repository contains the code and pretrained models for the following paper (Submitting at ICASSP 2024):
+This Repository contains the code and pretrained models for the following ICASSP 2024 paper:
 
 * **Title** : Emphasized Non-Target Speaker Knowledge in Knowledge Distillation for Speaker Verification
 * **Autor** : Duc-Tuan Truong, Ruijie Tao, Jia Qi Yip, Kong Aik Lee, Eng Siong Chng
-
-The current code only contains the model and testing scripts. The training script will be provided upon the paper acceptance notification of ICASSP 2024
 
 # Prerequisites
 
@@ -32,6 +30,12 @@ The pretrained teacher model WavLM-Large can be found at [microsoft/UniSpeech](h
 
 We have uploaded pretrained models of our experiments. You can download pretrained models from [OneDrive](https://entuedu-my.sharepoint.com/:f:/g/personal/truongdu001_e_ntu_edu_sg/EpjkpezMPC9Fmrng3w73iVcB7aFORZoiNWg458Y3RlOGOA?e=FhYn6Q) and put in the corresponding directory in `exp/` folder. 
 
+## Training
+To perform model training, run:
+```
+bash run_train.sh --config=/path/to/exp_config.yaml --exp_dir=/path/to/exp_dir
+```
+
 ## Testing
 To run evaluation on VoxCeleb evaluation sets: Vox-O, Vox-H, and Vox-E. 
 ```
@@ -49,4 +53,4 @@ Our work is built upon the [wenet-e2e/wespeaker](https://github.com/wenet-e2e/we
 
 [megvii-research/mdistiller](https://github.com/megvii-research/mdistiller) (for Decouple Knowledge Distillation).
 
-Thanks for these authors to open source their code!
+Thanks for these authors for sharing their work!
