@@ -13,11 +13,8 @@
 # limitations under the License.
 
 import wespeaker.models.tdnn as tdnn
-import wespeaker.models.ecapa_tdnn as ecapa_tdnn
 import wespeaker.models.resnet as resnet
-import wespeaker.models.repvgg as repvgg
 import wespeaker.models.campplus as campplus
-import wespeaker.models.s3prl_upstream as s3prl_upstream
 import wespeaker.models.wavlm_ecapa_tdnn as wavlm_ecapa_tdnn
 
 def get_speaker_model(model_name: str):
@@ -25,16 +22,10 @@ def get_speaker_model(model_name: str):
         return getattr(tdnn, model_name)
     elif model_name.startswith("ECAPA_TDNN_SMALL"):
         return getattr(wavlm_ecapa_tdnn, model_name)
-    elif model_name.startswith("ECAPA_TDNN"):
-        return getattr(ecapa_tdnn, model_name)
     elif model_name.startswith("ResNet"):
         return getattr(resnet, model_name)
-    elif model_name.startswith("REPVGG"):
-        return getattr(repvgg, model_name)
     elif model_name.startswith("CAMPPlus"):
         return getattr(campplus, model_name)
-    elif model_name.startswith("s3prl"):
-        return getattr(s3prl_upstream, 'UpstreamExpert')
 
     else:  # model_name error !!!
         print(model_name + " not found !!!")

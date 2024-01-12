@@ -15,6 +15,70 @@ from omegaconf import OmegaConf
 from s3prl.upstream.interfaces import UpstreamBase
 from torch.nn.utils.rnn import pad_sequence
 
+import math
+
+class AMM(nn.Module):
+    r"""Implement of large margin arc distance: :
+        Args:
+            in_features: size of each input sample
+            out_features: size of each output sample
+            scale: norm of input feature
+            margin: margin
+            cos(theta + margin)
+        """
+
+    def __init__(self,
+                 in_features,
+                 out_features,
+                 scale=32.0,
+                 margin=0.2,
+                 easy_margin=False):
+        super(AMM, self).__init__()
+        self.in_features = in_features
+        self.out_features = out_features
+        self.scale = scale
+        self.margin = margin
+        self.projection = nn.Linear(in_features, out_features, bias=False)
+        nn.init.xavier_uniform_(self.projection.weight)
+
+        self.easy_margin = easy_margin
+        self.cos_m = math.cos(margin)
+        self.sin_m = math.sin(margin)
+        self.th = math.cos(math.pi - margin)
+        self.mm = math.sin(math.pi - margin) * margin
+        self.mmm = 1.0 + math.cos(
+            math.pi - margin)  # this can make the output more continuous
+        ########
+        self.m = self.margin
+        ########
+
+
+    def forward(self, input, label):
+        cosine = F.linear(F.normalize(input), F.normalize(self.projection.weight))
+        sine = torch.sqrt(1.0 - torch.pow(cosine, 2))
+        phi = cosine * self.cos_m - sine * self.sin_m
+        if self.easy_margin:
+            phi = torch.where(cosine > 0, phi, cosine)
+        else:
+            ########
+            # phi = torch.where(cosine > self.th, phi, cosine - self.mm)
+            phi = torch.where(cosine > self.th, phi, cosine - self.mmm)
+            ########
+
+        one_hot = input.new_zeros(cosine.size())
+        one_hot.scatter_(1, label.view(-1, 1).long(), 1)
+        output = (one_hot * phi) + ((1.0 - one_hot) * cosine)
+        output *= self.scale
+
+        return output
+
+    def extra_repr(self):
+        return '''in_features={}, out_features={}, scale={},
+                  margin={}, easy_margin={}'''.format(self.in_features,
+                                                      self.out_features,
+                                                      self.scale, self.margin,
+                                                      self.easy_margin)
+
 def load_model(filepath):
     state = torch.load(filepath, map_location=lambda storage, loc: storage)
     # state = load_checkpoint_to_cpu(filepath)
@@ -312,6 +376,7 @@ class ECAPA_TDNN(nn.Module):
         self.bn = nn.BatchNorm1d(self.channels[-1] * 2)
         self.linear = nn.Linear(self.channels[-1] * 2, emb_dim)
 
+        self.loss_calculator = AMM(256, 5994)
 
     def get_feat_num(self):
         self.feature_extract.eval()
@@ -351,7 +416,7 @@ class ECAPA_TDNN(nn.Module):
         x = self.instance_norm(x)
         return x
 
-    def forward(self, x):
+    def forward(self, x, label):
         x = self.get_feat(x)
 
         out1 = self.layer1(x)
@@ -363,8 +428,9 @@ class ECAPA_TDNN(nn.Module):
         out = F.relu(self.conv(out))
         out = self.bn(self.pooling(out))
         out = self.linear(out)
+        logit = self.loss_calculator(out, label)
 
-        return out
+        return logit
 
 
 def ECAPA_TDNN_SMALL(feat_dim=1024, emb_dim=256, feat_type='wavlm_large', sr=16000, feature_selection="hidden_states",
@@ -373,7 +439,7 @@ update_extract=False, config_path=None, pretrained_path=None):
     if pretrained_path is not None:
         print('Loading pretrained teacher model ...')
         state_dict = torch.load(pretrained_path)['model']
-        model.load_state_dict(state_dict, strict=False) 
+        model.load_state_dict(state_dict) 
     for param in model.parameters():
         param.requires_grad = False
     return model

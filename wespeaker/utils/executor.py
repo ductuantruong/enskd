@@ -68,9 +68,9 @@ def run_epoch(dataloader,
                 embeds = outputs[-1] if isinstance(outputs, tuple) else outputs
                 outputs = model.module.projection(embeds, targets)
                 with torch.no_grad():
-                    teacher_embeds = teacher_model(wav)
+                    teacher_logits = teacher_model(wav, targets)
                 main_loss = criterion(outputs, targets)
-                aux_loss = aux_criterion(embeds, teacher_embeds)
+                aux_loss = aux_criterion(outputs, teacher_logits, targets, epoch)
                 loss = main_loss + aux_loss
             # loss, acc
             loss_meter.add(main_loss.item())
