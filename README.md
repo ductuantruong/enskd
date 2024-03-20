@@ -42,6 +42,21 @@ To run evaluation on VoxCeleb evaluation sets: Vox-O, Vox-H, and Vox-E.
 bash run_test.sh --stage 1 --stop_stage 3 --config=/path/to/exp_config.yaml --exp_dir=/path/to/exp_dir --model_path=/path/to/pretrained_model.pt
 ```
 
+## Citation
+
+If you find our repository valuable for your work, please consider citing our paper:
+```
+@INPROCEEDINGS{enskd,
+  author={Truong, Duc-Tuan and Tao, Ruijie and Yip, Jia Qi and Aik Lee, Kong and Chng, Eng Siong},
+  booktitle={ICASSP 2024 - 2024 IEEE International Conference on Acoustics, Speech and Signal Processing (ICASSP)}, 
+  title={Emphasized Non-Target Speaker Knowledge in Knowledge Distillation for Automatic Speaker Verification}, 
+  year={2024},
+  volume={},
+  number={},
+  pages={10336-10340},
+  doi={10.1109/ICASSP48485.2024.10447160}}
+```
+
 ## License
 [MIT](https://choosealicense.com/licenses/mit/)
 
